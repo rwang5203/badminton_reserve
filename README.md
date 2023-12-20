@@ -3,6 +3,6 @@
 
 ### TODOs
 
-- Argparse
-- AliPay automatic payment
-- Code adaptation to Ubuntu
+- Argparse (main.py)
+- AliPay automatic payment (automate.py)
+- Code adaptation to Ubuntu and performance testing (automate.py & book_court.py)
