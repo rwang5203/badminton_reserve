@@ -1,30 +1,37 @@
+import requests
+from model import CNN
+
+
 class Data:
-    book_data = None
-    book_date = None
-    book_headers = None
-    captcha_headers = None
+    '''
+    A global variable that stored in actively read and modified by all modules.
+    '''
+    book_data: dict = None
+    book_date: str = None
+    book_headers: dict = None
+    captcha_headers: dict = None
     chromeDriver = None
     index = 0
     jsessionid = None
     serverid = None
-    captcha_label = None
-    cuda_device = None
+    captcha_label: str = None
+    cuda_device: str = None
     curCourtIDs = None
-    payment_method = None
-    password = None
-    phone_number = None
-    prefGymID = None
-    prefGymNameCN = None
-    prefGymNameEN = None
-    prefItemID = None
-    prefCourtIDs = []
-    validCourtIDs = []
-    prefCourtCosts = []
+    payment_method: int = None
+    password: str = None
+    phone_number: str = None
+    prefGymID: str = None
+    prefGymNameCN: str = None
+    prefGymNameEN: str = None
+    prefItemID: str = None
+    prefCourtIDs: list = []
+    validCourtIDs: list = []
+    prefCourtCosts: list = []
     prefCourtInfos = []
     prefCourtTokens = []
-    recognition_model = None
-    session = None
-    studentid = None
-    time_difference = None
-    userName = None
-    viewbookURL = None
+    recognition_model: CNN = None
+    session: requests.Session = None
+    studentid: str = None
+    time_difference: float = None
+    userName: str = None
+    viewbookURL: str = None
