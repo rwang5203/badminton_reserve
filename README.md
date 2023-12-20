@@ -1,16 +1,17 @@
 # Badminton Reserve with Selenium
 
 
-## How to run
+### Usage
+- Installed the python environment (PyTorch, Selenium, OpenCV)
+- Fill out your personal info in `config.py` and book preferences in `prefs.py`.
+- Run the script by the following command:
 
-Configue in `config.py` then run:
-
-```python
+```
 python main.py
 ```
 
 ### TODOs
 
-- Argparse
-- AliPay automatic payment
-- Code adaptation to Ubuntu
+- Argparse (main.py)
+- AliPay automatic payment (automate.py)
+- Code adaptation to Ubuntu and performance testing (automate.py & book_court.py)
