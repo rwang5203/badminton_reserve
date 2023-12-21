@@ -72,7 +72,7 @@ def book_courts():
 
         log(
             f"Booking {globals.index+1}/{len(globals.prefCourtTokens)}: 【{globals.prefGymNameCN} {globals.book_date} {globals.prefCourtInfos[globals.index % len(globals.prefCourtTokens)]}】..."  # noqa
-        )  # noqa
+        )
         if book_resp.status_code == 200:
             book_result = json.loads(book_resp.text)["msg"]
             log(f"Returned result: {book_result}")
@@ -150,9 +150,4 @@ def prepare_book_data():
         globals.captcha_label,
         globals.payment_method,
     )
-    print(
-        "["
-        + datetime.datetime.now().strftime("%H:%M:%S.%f")[:-3]
-        + "] "
-        + "Finished preparing book globals."
-    )
+    log("Finished preparing book globals.")
