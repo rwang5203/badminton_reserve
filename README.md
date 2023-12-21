@@ -16,7 +16,7 @@ python main.py --studentid <学号> --phone <手机号码> --password <密码> -
 
 Run `python main.py -h` to see all arguments.
 
-> Make sure your machine's clock is not too off. Go to <https://time.is/> to check.
+> Make sure your local system's clock is calibrated. You can calibrate local time with TUNA NTP server `ntp.tuna.tsinghua.edu.cn` in advance to your booking.
 
 ## TODOs
 
