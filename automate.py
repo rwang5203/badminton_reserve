@@ -8,7 +8,7 @@ import platform
 import time
 
 
-# If is Linux, use pyvirtualdisplay
+# If operating on Linux, use pyvirtualdisplay
 if platform.system() == "Linux":
     display = Display(visible=0, size=(800, 800))
     display.start()
@@ -39,8 +39,6 @@ def automateLogin(STUDENT_ID: str, PASSWORD: str, GYM_ID: str, ITEM_ID: str):
         chrome_options.add_argument("--headless=new")
         # chrome_options.add_argument("--disable-dev-shm-usage")  # //!!!should be enabled for Jenkins
         # chrome_options.add_argument("--window-size=1920x1080")  # //!!!should be enabled for Jenkins
-        # chrome_options.add_argument("--ignore-ssl-errors=yes")
-        # chrome_options.add_argument("--ignore-certificate-errors")
         chrome_options.add_argument("log-level=2")
         chrome_options.add_experimental_option(
             "excludeSwitches", ["enable-logging"]
@@ -49,7 +47,7 @@ def automateLogin(STUDENT_ID: str, PASSWORD: str, GYM_ID: str, ITEM_ID: str):
         service = Service(chrome_driver_path)
         driver = webdriver.Chrome(service=service, options=chrome_options)
 
-    # TODO: "Darwin" for macOS
+    # TODO: "Darwin" for macOS arm64 and x64
 
     driver.get("https://50.tsinghua.edu.cn/dl.jsp")
 
