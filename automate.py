@@ -1,17 +1,10 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
-from pyvirtualdisplay import Display
 
 import datetime
 import platform
 import time
-
-
-# If operating on Linux, use pyvirtualdisplay
-if platform.system() == "Linux":
-    display = Display(visible=0, size=(800, 800))
-    display.start()
 
 
 def automateLogin(STUDENT_ID: str, PASSWORD: str, GYM_ID: str, ITEM_ID: str):
