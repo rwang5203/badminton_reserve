@@ -106,10 +106,10 @@ def book_main(args: Args):
     actual_book_time, update_data_time, calib_time = get_preparation_time(
         book_time
     )
-    print(f"Book time is set to {book_time}")
-    print(f"Actual book time is set to {actual_book_time}")
-    print(f"Update data time is set to {update_data_time}")
-    print(f"Calibration time is set to {calib_time}")
+    log(f"Book time is set to {book_time}")
+    log(f"Actual book time is set to {actual_book_time}")
+    log(f"Update data time is set to {update_data_time}")
+    log(f"Calibration time is set to {calib_time}")
     timestamp_recalibration = (
         time.mktime(calib_time.timetuple()) + calib_time.microsecond / 1e6
     )
