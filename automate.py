@@ -5,8 +5,6 @@ from selenium.webdriver.common.by import By
 import datetime
 import time
 
-from config import format_pay_header
-
 
 def automateLogin(STUDENT_ID: str, PASSWORD: str, GYM_ID: str, ITEM_ID: str):
     chrome_driver_path = "./chromedriver.exe"
