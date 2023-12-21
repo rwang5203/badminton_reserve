@@ -3,11 +3,11 @@ from typing import Literal, List
 
 
 class Args(Tap):
-    studentid: str  # 学号
-    password: str  # 密码
-    phone: str  # 手机号码
-    paymentmethod: int = 0  # (0 for on-site payment, 1 for online payment)
-    booknow: bool = False  # Book immediately, for testing.
+    studentid: str
+    password: str
+    phone: str
+    paymentmethod: int = 0  # 0 for on-site payment, 1 for online payment
+    booknow: bool = False  # If True, book immediately, for testing.
 
     gym: Literal['Qimo', 'Zongti', 'Xiti', 'Tennis'] = 'Qimo'
     '''[气膜："Qimo", 综体："Zongti", 西体："Xiti"]'''
