@@ -15,11 +15,11 @@ from config import (
     format_captcha_header,
 )
 import globals
-from args import Args
+from args import parse_args
 from utils import log
 
 
-def update_data(prefSession, args: Args):
+def update_data(prefSession, args):
     globals.book_date = str(datetime.date.today() + timedelta(days=3))
     globals.cuda_device = "cpu"
     globals.recognition_model = preload_model(globals.cuda_device)
@@ -82,7 +82,7 @@ def get_preparation_time(
     return actual_book_time, update_data_time, calib_time
 
 
-def get_book_time(args: Args):
+def get_book_time(args):
     now = datetime.datetime.now()
     if args.booknow:
         # For testing purposes
@@ -103,7 +103,7 @@ def get_book_time(args: Args):
     return book_time
 
 
-def book_main(args: Args):
+def book_main(args):
     log("Initialized the script.")
     prefSession = requests.Session()
     s = sched.scheduler(time.time, time.sleep)
@@ -154,11 +154,11 @@ def book_main(args: Args):
             calibration_done = True
 
         s.run(blocking=False)
-        time.sleep(0.2)
+        time.sleep(0.02)
 
 
 if __name__ == "__main__":
-    args = Args().parse_args()
+    args = parse_args()
     if args.booknow:
         args.gym = "Tennis"
         args.paymentmethod = 1
