@@ -7,7 +7,7 @@ from args import Args
 
 from urllib3.exceptions import InsecureRequestWarning
 
-requests.packages.urllib3.disable_warnings(InsecureRequestWarning)  # type: ignore
+requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 
 FIELDS = {
@@ -88,8 +88,8 @@ def get_prefs(session: requests.Session, args):
     # globals.prefGymNameEN = "Tennis"
     globals.prefGymNameEN = args.gym
     pref_fields = parse_fields(args)
-    print("目标体育馆: ", args.gym)
-    print("目标场地: ", pref_fields)
+    print("Target Gym:", args.gym)
+    print("Target Courts:", pref_fields)
 
     if globals.prefGymNameEN == "Qimo":
         # 气膜羽毛球
