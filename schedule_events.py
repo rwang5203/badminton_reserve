@@ -1,8 +1,9 @@
 import datetime
+from datetime import timedelta
 import requests
 import sched
 import time
-from argparse import Namespace
+from typing import Tuple
 
 from automate import automateLogin
 from book_court import book_courts, prepare_book_data
@@ -10,151 +11,138 @@ from calibrate import time_calibration
 from predict import preload_model
 from prefs import get_prefs
 from config import (
-    # password,
-    # paymentmethod,
-    # phonenumber,
-    # studentid,
     format_book_header,
     format_captcha_header,
 )
-from data import Data
+import globals
+from args import Args
+from utils import log
 
 
-def update_data(prefSession, args):
-    Data.book_date = str(datetime.date.today() + datetime.timedelta(days=3))
-    Data.cuda_device = "cpu"
-    Data.recognition_model = preload_model(Data.cuda_device)
-    Data.payment_method = args.paymentmethod
-    Data.studentid = args.studentid
-    Data.password = args.password
-    Data.phone_number = args.phonenumber
+def update_data(prefSession, args: Args):
+    globals.book_date = str(datetime.date.today() + timedelta(days=3))
+    globals.cuda_device = "cpu"
+    globals.recognition_model = preload_model(globals.cuda_device)
+    globals.payment_method = args.paymentmethod
+    globals.studentid = args.studentid
+    globals.password = args.password
+    globals.phone_number = args.phone
 
-    Data.session = requests.Session()
+    globals.session = requests.Session()
 
-    get_prefs(prefSession)
+    get_prefs(prefSession, args)
     (
-        Data.serverid,
-        Data.jsessionid,
-        Data.userName,
-        Data.chromeDriver,
+        globals.serverid,
+        globals.jsessionid,
+        globals.userName,
+        globals.chromeDriver,
     ) = automateLogin(
-        Data.studentid, Data.password, Data.prefGymID, Data.prefItemID
+        globals.studentid, globals.password, globals.prefGymID, globals.prefItemID
     )
-    print(
-        "["
-        + datetime.datetime.now().strftime("%H:%M:%S.%f")[:-3]
-        + "] "
-        + f"You are logged in as {Data.userName}"
+    log(f"You are logged in as {globals.userName}")
+    globals.book_headers = format_book_header(
+        globals.serverid,
+        globals.jsessionid,
+        globals.prefGymID,
+        globals.prefItemID,
+        globals.book_date,
     )
-    Data.book_headers = format_book_header(
-        Data.serverid,
-        Data.jsessionid,
-        Data.prefGymID,
-        Data.prefItemID,
-        Data.book_date,
-    )
-    Data.captcha_headers = format_captcha_header(
-        Data.serverid,
-        Data.jsessionid,
-        Data.prefGymID,
-        Data.prefItemID,
-        Data.book_date,
+    globals.captcha_headers = format_captcha_header(
+        globals.serverid,
+        globals.jsessionid,
+        globals.prefGymID,
+        globals.prefItemID,
+        globals.book_date,
     )
     if (
-        Data.prefCourtIDs
-        and Data.prefCourtCosts
-        and Data.prefCourtInfos
-        and Data.prefCourtTokens
+        globals.prefCourtIDs
+        and globals.prefCourtCosts
+        and globals.prefCourtInfos
+        and globals.prefCourtTokens
     ):
-        print(
-            "["
-            + datetime.datetime.now().strftime("%H:%M:%S.%f")[:-3]
-            + "] "
-            + f"Acquired necessary resources for Gym: {Data.prefGymNameCN} on Date: {Data.book_date}"
-        )
+        log(
+            f"Acquired necessary resources for Gym: {globals.prefGymNameCN} on Date: {globals.book_date}"
+        )  # noqa
 
 
 def recalibrate_time():
-    Data.time_difference = time_calibration()
+    globals.time_difference = time_calibration()
 
 
-def book_main(args: Namespace):
-    print(
-        "["
-        + datetime.datetime.now().strftime("%H:%M:%S.%f")[:-3]
-        + "] "
-        + "Initialized the script."
-    )
-    prefSession = requests.Session()
-    s = sched.scheduler(time.time, time.sleep)
+def get_preparation_time(
+    book_time: datetime.datetime,
+) -> Tuple[datetime.datetime, datetime.datetime, datetime.datetime]:
+    actual_book_time = book_time - timedelta(microseconds=50000)
+    update_data_time = book_time - timedelta(seconds=10)
+    calib_time = update_data_time + timedelta(seconds=5)
+    return actual_book_time, update_data_time, calib_time
 
+
+def get_book_time(args: Args):
     now = datetime.datetime.now()
+    if args.booknow:
+        # For testing purposes
+        book_time = now + timedelta(seconds=11)
+        return book_time
+
     if now.hour > 8:
-        target_date = now.date() + datetime.timedelta(
-            days=1
-        )  # Reserve for tomorrow
+        # Reserve for tomorrow
+        target_date = now.date() + timedelta(days=1)
     else:
         target_date = now.date()
 
-    target_time_1 = datetime.datetime.combine(
-        target_date, datetime.time(7, 59, 50, 000)
+    if args.booknow:
+        target_date = now.date()
+    book_time = datetime.datetime.combine(
+        target_date, datetime.time(8, 0, 0, 0)
     )
-    target_time_2 = datetime.datetime.combine(
-        target_date, datetime.time(7, 59, 55, 000)
-    )
+    return book_time
 
-    recalibration_time = datetime.datetime.combine(
-        target_date, datetime.time(7, 59, 59, 0)
+
+def book_main(args: Args):
+    log("Initialized the script.")
+    prefSession = requests.Session()
+    s = sched.scheduler(time.time, time.sleep)
+
+    book_time = get_book_time(args)
+    actual_book_time, update_data_time, calib_time = get_preparation_time(
+        book_time
     )
+    print(f"Book time is set to {book_time}")
+    print(f"Actual book time is set to {actual_book_time}")
+    print(f"Update data time is set to {update_data_time}")
+    print(f"Calibration time is set to {calib_time}")
     timestamp_recalibration = (
-        time.mktime(recalibration_time.timetuple())
-        + recalibration_time.microsecond / 1e6
+        time.mktime(calib_time.timetuple()) + calib_time.microsecond / 1e6
     )
     s.enterabs(timestamp_recalibration, 1, recalibrate_time)
 
     s.enterabs(
-        time.mktime(target_time_1.timetuple())
-        + target_time_1.microsecond / 1e6,
+        time.mktime(update_data_time.timetuple())
+        + update_data_time.microsecond / 1e6,
         1,
         update_data,
-        argument=(prefSession,),
+        argument=(prefSession, args),
     )
     s.enterabs(
-        time.mktime(target_time_2.timetuple())
-        + target_time_2.microsecond / 1e6,
+        time.mktime(calib_time.timetuple()) + calib_time.microsecond / 1e6,
         1,
         prepare_book_data,
     )
 
     calibration_done = False
-    exit()
     # The third target time will be recalibrated daily
     while True:
-        if not calibration_done and Data.time_difference is not None:
+        if not calibration_done and globals.time_difference is not None:
             # Adjust target_time_3 based on the time difference
             time_adjustment = datetime.timedelta(
-                microseconds=abs(Data.time_difference)
+                microseconds=abs(globals.time_difference)
             )
-            if Data.time_difference > 0:
-                target_time_3 = (
-                    datetime.datetime.combine(
-                        target_date, datetime.time(7, 59, 59, 950000)
-                    )
-                    + time_adjustment
-                )
+            if globals.time_difference > 0:
+                target_time_3 = book_time + time_adjustment
             else:
-                target_time_3 = (
-                    datetime.datetime.combine(
-                        target_date, datetime.time(7, 59, 59, 950000)
-                    )
-                    - time_adjustment
-                )
-            print(
-                "["
-                + datetime.datetime.now().strftime("%H:%M:%S.%f")[:-3]
-                + "] "
-                + "Book time calibrated."
-            )
+                target_time_3 = book_time - time_adjustment
+            log("Book time calibrated.")
             timestamp_3 = (
                 time.mktime(target_time_3.timetuple())
                 + target_time_3.microsecond / 1e6

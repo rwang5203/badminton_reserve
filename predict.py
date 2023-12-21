@@ -4,11 +4,12 @@ from model import CNN
 
 model_path = "./model/cnn.pth"
 
-# Captcha Alphabet (0-9, a-z, A-Z) 
+# Captcha Alphabet (0-9, a-z, A-Z)
 source = [str(i) for i in range(0, 10)]
 source += [chr(i) for i in range(97, 97 + 26)]
 source += [chr(i) for i in range(65, 65 + 26)]
 alphabet = "".join(source)
+
 
 def predict_captcha(device: str, img_tensor: torch.Tensor, cnn) -> str:
     if device == "cuda":
@@ -21,6 +22,7 @@ def predict_captcha(device: str, img_tensor: torch.Tensor, cnn) -> str:
     output = output.view(-1, 4)[0]
     label = "".join([alphabet[i] for i in output.cpu().numpy()])
     return label
+
 
 def preload_model(device: str):
     cnn = CNN()

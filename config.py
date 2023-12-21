@@ -16,19 +16,10 @@ token_url = "https://50.tsinghua.edu.cn/userOperation.do?ms=gotoLoginPage"
 pay_judge_url = "https://50.tsinghua.edu.cn/pay/payAction.do?ms=judgeHavePayed"
 thu_pay_url = "http://fa-online.tsinghua.edu.cn/zjjsfw/zjjs/api.do"
 
-# Fill this out
-studentid = ""
-password = ""
-phonenumber = ""
-
-# Payment Method
-# (0 for On-site Payment, 1 for Online Payment)
-paymentmethod = 0
-
 
 # Format Headers and URL
 def format_viewbook_url(GYM_ID, ITEM_ID, BOOK_DATE) -> str:
-    return f"https://50.tsinghua.edu.cn/gymsite/cacheAction.do?ms=viewBook&gymnasium_id={GYM_ID}&item_id={ITEM_ID}&time_date={BOOK_DATE}&userType=1"
+    return f"https://50.tsinghua.edu.cn/gymsite/cacheAction.do?ms=viewBook&gymnasium_id={GYM_ID}&item_id={ITEM_ID}&time_date={BOOK_DATE}&userType=1"  # noqa
 
 
 def format_captcha_header(
@@ -39,14 +30,14 @@ def format_captcha_header(
         "accept-encoding": "gzip, deflate, br",
         "accept-language": "zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6",
         "cookie": f"serverid={SERVER_ID}; JSESSIONID={JSESSION_ID}",
-        "referer": f"https://50.tsinghua.edu.cn/gymbook/gymBookAction.do?ms=viewGymBook&gymnasium_id={GYM_ID}&item_id={ITEM_ID}&time_date={BOOK_DATE}&userType=",
+        "referer": f"https://50.tsinghua.edu.cn/gymbook/gymBookAction.do?ms=viewGymBook&gymnasium_id={GYM_ID}&item_id={ITEM_ID}&time_date={BOOK_DATE}&userType=",  # noqa
         "sec-ch-ua": '"Google Chrome";v="119", "Chromium";v="119", "Not?A_Brand";v="24"',
         "sec-ch-ua-mobile": "?0",
         "sec-ch-ua-platform": '"Windows"',
         "sec-fetch-dest": "image",
         "sec-fetch-mode": "np-cors",
         "sec-fetch-site": "same-origin",
-        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36",  # noqa
     }
     return captcha_header
 
@@ -63,7 +54,7 @@ def format_book_header(
         "content-type": "application/x-www-form-urlencoded",
         "cookie": f"serverid={SERVER_ID}; JSESSIONID={JSESSION_ID}",
         "origin": "https://50.tsinghua.edu.cn",
-        "referer": f"https://50.tsinghua.edu.cn/gymbook/gymBookAction.do?ms=viewGymBook&gymnasium_id={GYM_ID}&item_id={ITEM_ID}&time_date={BOOK_DATE}&userType=",
+        "referer": f"https://50.tsinghua.edu.cn/gymbook/gymBookAction.do?ms=viewGymBook&gymnasium_id={GYM_ID}&item_id={ITEM_ID}&time_date={BOOK_DATE}&userType=",  # noqa
         "sec-ch-ua": '"Google Chrome";v="119", "Chromium";v="119", "Not?A_Brand";v="24"',
         "sec-ch-ua-mobile": "?0",
         "sec-ch-ua-platform": '"Windows"',
@@ -71,7 +62,7 @@ def format_book_header(
         "x-requested-with": "XMLHttpRequest",
         "sec-fetch-mode": "cors",
         "sec-fetch-site": "same-origin",
-        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36",  # noqa
     }
     return book_header
 
@@ -106,7 +97,7 @@ def format_book_data(
 
 def format_pay_header(SERVER_ID, JSESSION_ID) -> dict:
     pay_header = {
-        "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+        "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",  # noqa
         "accept-encoding": "gzip, deflate, br",
         "accept-language": "en-US,en;q=0.9",
         "cache-control": "max-age=0",
@@ -123,6 +114,6 @@ def format_pay_header(SERVER_ID, JSESSION_ID) -> dict:
         "sec-fetch-site": "same-origin",
         "sec-fetch-user": "?1",
         "upgrade-insecure-requests": "1",
-        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36",  # noqa
     }
     return pay_header

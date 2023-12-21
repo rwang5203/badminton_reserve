@@ -1,6 +1,7 @@
 import torch.nn as nn
 from torch import Tensor
 
+
 class CNN(nn.Module):
     def __init__(self, num_class=62, num_char=4):
         super(CNN, self).__init__()
