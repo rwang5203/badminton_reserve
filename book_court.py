@@ -28,14 +28,14 @@ def book_courts():
         data=globals.book_data,
         headers=globals.book_headers,
         verify=False,
-    )  # noqa
+    )
     log(
-        f"Booking {globals.index+1}/{len(globals.prefCourtTokens)}: 【{globals.prefGymNameCN} {globals.book_date} {globals.prefCourtInfos[globals.index % len(globals.prefCourtTokens)]}】..."  # noqa
-    )  # noqa
+        f"Booking {globals.index+1}/{len(globals.prefCourtTokens)}: 【{globals.prefGymNameCN} {globals.book_date} {globals.prefCourtInfos[globals.index % len(globals.prefCourtTokens)]}】..."
+    )
     if "预定成功" in json.loads(book_resp.text)["msg"]:
         log(
-            f"Booked: {globals.prefGymNameCN} {globals.book_date} {globals.prefCourtInfos[globals.index % len(globals.prefCourtTokens)]}"  # noqa
-        )  # noqa
+            f"Booked: {globals.prefGymNameCN} {globals.book_date} {globals.prefCourtInfos[globals.index % len(globals.prefCourtTokens)]}"
+        )
         automatePay(
             globals.chromeDriver,
             globals.session,
@@ -71,7 +71,7 @@ def book_courts():
         )
 
         log(
-            f"Booking {globals.index+1}/{len(globals.prefCourtTokens)}: 【{globals.prefGymNameCN} {globals.book_date} {globals.prefCourtInfos[globals.index % len(globals.prefCourtTokens)]}】..."  # noqa
+            f"Booking {globals.index+1}/{len(globals.prefCourtTokens)}: 【{globals.prefGymNameCN} {globals.book_date} {globals.prefCourtInfos[globals.index % len(globals.prefCourtTokens)]}】..."
         )
         if book_resp.status_code == 200:
             book_result = json.loads(book_resp.text)["msg"]
@@ -150,4 +150,4 @@ def prepare_book_data():
         globals.captcha_label,
         globals.payment_method,
     )
-    log("Finished preparing book globals.")
+    log("Finished preparing book data.")
