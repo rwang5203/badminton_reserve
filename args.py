@@ -1,18 +1,19 @@
-from tap import Tap
-from typing import Literal, List
+import argparse
+from typing import List
 
+def parse_args():
+    parser = argparse.ArgumentParser(description="Script to book badminton courts")
 
-class Args(Tap):
-    studentid: str
-    password: str
-    phone: str
-    paymentmethod: int = 0  # 0 for on-site payment, 1 for online payment
-    booknow: bool = False  # If True, book immediately, for testing.
+    parser.add_argument('--studentid', type=str, required=True, help='Student ID')
+    parser.add_argument('--password', type=str, required=True, help='Password')
+    parser.add_argument('--phone', type=str, required=True, help='Phone number')
+    parser.add_argument('--paymentmethod', type=int, default=0, choices=[0, 1], help='Payment method: 0 for on-site, 1 for online')
+    parser.add_argument('--booknow', action='store_true', help='If set, book immediately (for testing)')
+    parser.add_argument('--gym', type=str, default='Qimo', choices=['Qimo', 'Zongti', 'Xiti', 'Tennis'], help='Gym location')
+    parser.add_argument('--fields', nargs='+', type=int, default=[12, 11, 10, 9, 8, 7], help='Target fields as a list of integers')
 
-    gym: Literal['Qimo', 'Zongti', 'Xiti', 'Tennis'] = 'Qimo'
-    '''[气膜："Qimo", 综体："Zongti", 西体："Xiti"]'''
+    args = parser.parse_args()
+    return args
 
-    fields: List[int] = [12, 11, 10]
-    '''
-    目标场地，用 int 来表示，例如：3 -> 三号场地，比如气膜的 "羽03".
-    '''
+if __name__ == "__main__":
+    args = parse_args()
