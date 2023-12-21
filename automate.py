@@ -1,22 +1,22 @@
-import os
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from pyvirtualdisplay import Display
 
 import datetime
+import platform
 import time
 
 
 # If is Linux, use pyvirtualdisplay
-if os.name == "posix":
+if platform.system() == "Linux":
     display = Display(visible=0, size=(800, 800))
     display.start()
 
 
 def automateLogin(STUDENT_ID: str, PASSWORD: str, GYM_ID: str, ITEM_ID: str):
     # Linux
-    if os.name == "posix":
+    if platform.system() == "Linux":
         chrome_driver_path = "./chromedriver_linux64"
         
         chrome_options = webdriver.ChromeOptions()
@@ -31,8 +31,9 @@ def automateLogin(STUDENT_ID: str, PASSWORD: str, GYM_ID: str, ITEM_ID: str):
         driver = webdriver.Chrome(options=chrome_options)
         
     # Windows 
-    elif os.name == "nt":
+    elif platform.system() == "Windows":
         chrome_driver_path = "./chromedriver.exe"
+        
         chrome_options = webdriver.ChromeOptions()
         chrome_options.add_experimental_option("detach", True)
         chrome_options.add_argument("--headless=new")
@@ -47,6 +48,8 @@ def automateLogin(STUDENT_ID: str, PASSWORD: str, GYM_ID: str, ITEM_ID: str):
 
         service = Service(chrome_driver_path)
         driver = webdriver.Chrome(service=service, options=chrome_options)
+
+    # TODO: "Darwin" for macOS
 
     driver.get("https://50.tsinghua.edu.cn/dl.jsp")
 
@@ -84,11 +87,11 @@ def automateLogin(STUDENT_ID: str, PASSWORD: str, GYM_ID: str, ITEM_ID: str):
     gymButton.click()
 
     curDate = str(datetime.date.today())
-    curGymBadmintonButton = driver.find_element(
+    curGymButton = driver.find_element(
         By.XPATH,
         f"//a[@href='/gymbook/gymBookAction.do?ms=viewGymBook&gymnasium_id={GYM_ID}&item_id={ITEM_ID}&time_date={curDate}&userType=']",
     )
-    curGymBadmintonButton.click()
+    curGymButton.click()
 
     cookies = driver.get_cookies()
     for cookie in cookies:
@@ -138,4 +141,5 @@ def automatePay(driver, session, serverid, jsessionid, paymentmethod):
 
         # TODO: AliPay Automatic Payment
         # driver.get("http://fa-online.tsinghua.edu.cn/zjjsfw/zjjs/api.do")
-        # loginAlipayButton = &lt;&nbsp;登录账户付款
+        # loginAliPayButton = &lt;&nbsp;登录账户付款
+        # loginAliPayButton.click()
