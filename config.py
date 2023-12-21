@@ -1,20 +1,20 @@
 # URLs for Court Reservation
-alive_url = (
+ALIVE_URL = (
     "https://50.tsinghua.edu.cn/gymbook/gymBookAction.do?ms=viewGymBook"
 )
-login_url = "https://50.tsinghua.edu.cn/j_spring_security_check"
-homepage_url = "http://50.tsinghua.edu.cn/gymsite/cacheAction.do?ms=viewIndex"
-phone_url = (
+LOGIN_URL = "https://50.tsinghua.edu.cn/j_spring_security_check"
+HOMEPAGE_URL = "http://50.tsinghua.edu.cn/gymsite/cacheAction.do?ms=viewIndex"
+PHONE_URL = (
     "https://50.tsinghua.edu.cn/gymbook/gymBookAction.do?ms=hadContactOrNot"
 )
-book_url = "https://50.tsinghua.edu.cn/gymbook/gymBookAction.do?ms=saveGymBook"
-order_url = "https://50.tsinghua.edu.cn/pay/payAction.do?ms=getOrdersForNopay"
-captcha_url = "https://50.tsinghua.edu.cn/Kaptcha.jpg"
-token_url = "https://50.tsinghua.edu.cn/userOperation.do?ms=gotoLoginPage"
+BOOK_URL = "https://50.tsinghua.edu.cn/gymbook/gymBookAction.do?ms=saveGymBook"
+ORDER_URL = "https://50.tsinghua.edu.cn/pay/payAction.do?ms=getOrdersForNopay"
+CAPTCHA_URL = "https://50.tsinghua.edu.cn/Kaptcha.jpg"
+TOKEN_URL = "https://50.tsinghua.edu.cn/userOperation.do?ms=gotoLoginPage"
 
 # URLs for Automated Payment (TO-DO, requires WeChat Pay/Alipay API)
-pay_judge_url = "https://50.tsinghua.edu.cn/pay/payAction.do?ms=judgeHavePayed"
-thu_pay_url = "http://fa-online.tsinghua.edu.cn/zjjsfw/zjjs/api.do"
+PAY_JUDGE_URL = "https://50.tsinghua.edu.cn/pay/payAction.do?ms=judgeHavePayed"
+THU_PAY_URL = "http://fa-online.tsinghua.edu.cn/zjjsfw/zjjs/api.do"
 
 
 # Format Headers and URL

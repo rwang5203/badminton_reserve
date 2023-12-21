@@ -86,7 +86,7 @@ def get_book_time(args: Args):
     now = datetime.datetime.now()
     if args.booknow:
         # For testing purposes
-        book_time = now + timedelta(seconds=11)
+        book_time = now + timedelta(seconds=12)
         return book_time
 
     if now.hour > 8:

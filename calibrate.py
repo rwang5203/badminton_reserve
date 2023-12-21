@@ -3,6 +3,7 @@ import datetime
 
 NTP_SERVER = "ntp.tuna.tsinghua.edu.cn"
 
+
 def time_calibration():
     ntp_client = ntplib.NTPClient()
     response = ntp_client.request(NTP_SERVER, version=4)

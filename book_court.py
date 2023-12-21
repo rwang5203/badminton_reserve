@@ -24,7 +24,7 @@ def book_courts():
     Reserve courts with preferences, with updated resources.
     """
     book_resp = globals.session.post(
-        config.book_url,
+        config.BOOK_URL,
         data=globals.book_data,
         headers=globals.book_headers,
         verify=False,
@@ -64,7 +64,7 @@ def book_courts():
             update_lapse = end_time - start_time
 
         book_resp = globals.session.post(
-            config.book_url,
+            config.BOOK_URL,
             data=globals.book_data,
             headers=globals.book_headers,
             verify=False,
@@ -133,7 +133,7 @@ def save_captcha(image, captcha_label):
 
 def prepare_book_data():
     captcha = globals.session.get(
-        config.captcha_url, headers=globals.captcha_headers, verify=False
+        config.CAPTCHA_URL, headers=globals.captcha_headers, verify=False
     )
     captcha_img, captcha_tensor = read_image_bytes(captcha.content)
     globals.captcha_label = predict_captcha(

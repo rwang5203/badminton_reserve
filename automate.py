@@ -1,17 +1,28 @@
+import os
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
+from pyvirtualdisplay import Display
 
 import datetime
 import time
 
 
+# If is Linux, use pyvirtualdisplay
+if os.name == "posix":
+    display = Display(visible=0, size=(800, 800))
+    display.start()
+
+
 def automateLogin(STUDENT_ID: str, PASSWORD: str, GYM_ID: str, ITEM_ID: str, headless: bool):
     # chrome_driver_path = "./chromedriver.exe"
+    # chrome_driver_path = "./chromedriver_linux64/chromedriver"
     chrome_options = webdriver.ChromeOptions()
     chrome_options.add_experimental_option("detach", True)
     if headless:
         chrome_options.add_argument("--headless=new")
+    # chrome_options.add_argument("--disable-dev-shm-usage")  # //!!!should be enabled for Jenkins
+    # chrome_options.add_argument("--window-size=1920x1080")  # //!!!should be enabled for Jenkins
     # chrome_options.add_argument("--ignore-ssl-errors=yes")
     # chrome_options.add_argument("--ignore-certificate-errors")
     chrome_options.add_argument("log-level=2")

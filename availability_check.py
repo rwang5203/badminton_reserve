@@ -1,8 +1,9 @@
-import datetime
+# import datetime
 import re
 import requests
 
 import globals
+from utils import log
 
 
 def search_reserved(text):
@@ -99,13 +100,7 @@ def availability_update():
     globals.prefCourtCosts = [globals.prefCourtCosts[i] for i in valid_indices]
     globals.prefCourtTokens = [globals.prefCourtTokens[i] for i in valid_indices]
     globals.prefCourtInfos = [globals.prefCourtInfos[i] for i in valid_indices]
-    print(
-        "["
-        + datetime.datetime.now().strftime("%H:%M:%S.%f")[:-3]
-        + "] "
-        + "Remaining courts:",
-        globals.prefCourtInfos,
-    )
+    log(f"Remaining courts: {globals.prefCourtInfos}")
 
 
 if __name__ == "__main__":
