@@ -1,0 +1,6 @@
+opencv-python
+selenium
+torch
+numpy
+requests
+typed-argument-parser
