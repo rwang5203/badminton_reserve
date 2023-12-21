@@ -18,16 +18,16 @@ Run `python main.py -h` to see all arguments. You can also see `run_example.bat`
 
 > Make sure your local system's time is calibrated. You can calibrate your local time with Tsinghua NTP server `ntp.tuna.tsinghua.edu.cn` in advance to your reserving.
 
-
-For different platforms, you can download the chrome driver [here](https://googlechromelabs.github.io/chrome-for-testing/).
-### Linux
-After unzipping it to `/path/to/chromedriver-linux64`, configure the path in `automate.py` through the following code.
+### Chrome Driver Configuration
+For all platforms, you can download the latest chrome driver [here](https://googlechromelabs.github.io/chrome-for-testing/).
+#### Linux
+After unzipping the `chromedriver-linux64.zip` to `/path/to/chromedriver-linux64`, configure the driver directory in `automate.py` through the following code.
 ```python
 chrome_options.binary_location = '/path/to/chromedriver-linux64'
 ```
 
-### Windows
-After unzipping it to `/path/to/chromedriver-win64`, configure the path in `automate.py` through the following code.
+#### Windows
+After unzipping `chromedriver-win64.zip` to `/path/to/chromedriver-win64`, configure the driver path in `automate.py` through the following code.
 ```python
 chrome_driver_path = '/path/to/chromedriver-win64.exe'
 
