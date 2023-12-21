@@ -51,18 +51,18 @@ def automateLogin(STUDENT_ID: str, PASSWORD: str, GYM_ID: str, ITEM_ID: str):
     )
     driver.execute_script("arguments[0].click();", confirmButton)
 
-    qimoButton = driver.find_element(
+    gymButton = driver.find_element(
         By.XPATH,
         f"//a[@href='/gymbook/gymBookAction.do?ms=viewGymBook&gymnasium_id={GYM_ID}&item_id=&time_date=&userType=']",
     )
-    qimoButton.click()
+    gymButton.click()
 
     curDate = str(datetime.date.today())
-    curQimoBadmintonButton = driver.find_element(
+    curGymBadmintonButton = driver.find_element(
         By.XPATH,
         f"//a[@href='/gymbook/gymBookAction.do?ms=viewGymBook&gymnasium_id={GYM_ID}&item_id={ITEM_ID}&time_date={curDate}&userType=']",
     )
-    curQimoBadmintonButton.click()
+    curGymBadmintonButton.click()
 
     cookies = driver.get_cookies()
     for cookie in cookies:
