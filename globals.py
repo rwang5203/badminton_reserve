@@ -1,8 +1,8 @@
 '''
-A global module that stored in actively read and modified by all modules.
+A global module with global variables actively read and modified by all modules.
 '''
 import requests
-from model import CNN
+from model.cnn import CNN
 from selenium.webdriver import Chrome
 
 

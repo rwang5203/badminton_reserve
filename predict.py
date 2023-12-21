@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from model import CNN
+from model.cnn import CNN
 
 model_path = "./model/cnn.pth"
 
