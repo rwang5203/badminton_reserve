@@ -91,8 +91,6 @@ def get_book_time(args: Args):
     else:
         target_date = now.date()
 
-    if args.booknow:
-        target_date = now.date()
     book_time = datetime.datetime.combine(
         target_date, datetime.time(8, 0, 0, 0)
     )
