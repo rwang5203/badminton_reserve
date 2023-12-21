@@ -62,7 +62,7 @@ def update_data(prefSession, args: Args):
     ):
         log(
             f"Acquired necessary resources for Gym: {globals.prefGymNameCN} on Date: {globals.book_date}"
-        )  # noqa
+        )
 
 
 def recalibrate_time():
@@ -131,10 +131,9 @@ def book_main(args: Args):
     )
 
     calibration_done = False
-    # The third target time will be recalibrated daily
+    
     while True:
         if not calibration_done and globals.time_difference is not None:
-            # Adjust target_time_3 based on the time difference
             time_adjustment = datetime.timedelta(
                 microseconds=abs(globals.time_difference)
             )
