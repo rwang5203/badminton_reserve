@@ -11,6 +11,7 @@ def automateLogin(STUDENT_ID: str, PASSWORD: str, GYM_ID: str, ITEM_ID: str):
     chrome_options = webdriver.ChromeOptions()
 
     chrome_options.add_experimental_option("detach", True)
+    chrome_options.add_argument("--headless=new")
     # chrome_options.add_argument("--ignore-ssl-errors=yes")
     # chrome_options.add_argument("--ignore-certificate-errors")
     chrome_options.add_argument("log-level=2")
