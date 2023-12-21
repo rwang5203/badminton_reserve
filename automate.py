@@ -6,12 +6,12 @@ import datetime
 import time
 
 
-def automateLogin(STUDENT_ID: str, PASSWORD: str, GYM_ID: str, ITEM_ID: str):
-    chrome_driver_path = "./chromedriver.exe"
+def automateLogin(STUDENT_ID: str, PASSWORD: str, GYM_ID: str, ITEM_ID: str, headless: bool):
+    # chrome_driver_path = "./chromedriver.exe"
     chrome_options = webdriver.ChromeOptions()
-
     chrome_options.add_experimental_option("detach", True)
-    chrome_options.add_argument("--headless=new")
+    if headless:
+        chrome_options.add_argument("--headless=new")
     # chrome_options.add_argument("--ignore-ssl-errors=yes")
     # chrome_options.add_argument("--ignore-certificate-errors")
     chrome_options.add_argument("log-level=2")
@@ -19,8 +19,9 @@ def automateLogin(STUDENT_ID: str, PASSWORD: str, GYM_ID: str, ITEM_ID: str):
         "excludeSwitches", ["enable-logging"]
     )
 
-    service = Service(chrome_driver_path)
-    driver = webdriver.Chrome(service=service, options=chrome_options)
+    driver = webdriver.Chrome(options=chrome_options)
+    # service = Service(chrome_driver_path)
+    # driver = webdriver.Chrome(service=service, options=chrome_options)
 
     driver.get("https://50.tsinghua.edu.cn/dl.jsp")
 

@@ -16,3 +16,5 @@ class Args(Tap):
     '''
     目标场地，用 int 来表示，例如：3 -> 三号场地，比如气膜的 "羽03".
     '''
+
+    headless: bool = False  # If True, run Chrome in headless mode.

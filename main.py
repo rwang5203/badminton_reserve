@@ -37,7 +37,11 @@ def update_data(prefSession, args: Args):
         globals.userName,
         globals.chromeDriver,
     ) = automateLogin(
-        globals.studentid, globals.password, globals.prefGymID, globals.prefItemID
+        globals.studentid,
+        globals.password,
+        globals.prefGymID,
+        globals.prefItemID,
+        args.headless,
     )
     log(f"You are logged in as {globals.userName}")
     globals.book_headers = format_book_header(
