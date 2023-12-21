@@ -14,25 +14,39 @@ if os.name == "posix":
     display.start()
 
 
-def automateLogin(STUDENT_ID: str, PASSWORD: str, GYM_ID: str, ITEM_ID: str, headless: bool):
-    # chrome_driver_path = "./chromedriver.exe"
-    # chrome_driver_path = "./chromedriver_linux64/chromedriver"
-    chrome_options = webdriver.ChromeOptions()
-    chrome_options.add_experimental_option("detach", True)
-    if headless:
+def automateLogin(STUDENT_ID: str, PASSWORD: str, GYM_ID: str, ITEM_ID: str):
+    # Linux
+    if os.name == "posix":
+        chrome_driver_path = "./chromedriver_linux64"
+        
+        chrome_options = webdriver.ChromeOptions()
+        chrome_options.add_experimental_option("detach", True)
         chrome_options.add_argument("--headless=new")
-    # chrome_options.add_argument("--disable-dev-shm-usage")  # //!!!should be enabled for Jenkins
-    # chrome_options.add_argument("--window-size=1920x1080")  # //!!!should be enabled for Jenkins
-    # chrome_options.add_argument("--ignore-ssl-errors=yes")
-    # chrome_options.add_argument("--ignore-certificate-errors")
-    chrome_options.add_argument("log-level=2")
-    chrome_options.add_experimental_option(
-        "excludeSwitches", ["enable-logging"]
-    )
+        chrome_options.binary_location = chrome_driver_path
+        chrome_options.add_argument("log-level=2")
+        chrome_options.add_experimental_option(
+            "excludeSwitches", ["enable-logging"]
+        )
+        
+        driver = webdriver.Chrome(options=chrome_options)
+        
+    # Windows 
+    elif os.name == "nt":
+        chrome_driver_path = "./chromedriver.exe"
+        chrome_options = webdriver.ChromeOptions()
+        chrome_options.add_experimental_option("detach", True)
+        chrome_options.add_argument("--headless=new")
+        # chrome_options.add_argument("--disable-dev-shm-usage")  # //!!!should be enabled for Jenkins
+        # chrome_options.add_argument("--window-size=1920x1080")  # //!!!should be enabled for Jenkins
+        # chrome_options.add_argument("--ignore-ssl-errors=yes")
+        # chrome_options.add_argument("--ignore-certificate-errors")
+        chrome_options.add_argument("log-level=2")
+        chrome_options.add_experimental_option(
+            "excludeSwitches", ["enable-logging"]
+        )
 
-    driver = webdriver.Chrome(options=chrome_options)
-    # service = Service(chrome_driver_path)
-    # driver = webdriver.Chrome(service=service, options=chrome_options)
+        service = Service(chrome_driver_path)
+        driver = webdriver.Chrome(service=service, options=chrome_options)
 
     driver.get("https://50.tsinghua.edu.cn/dl.jsp")
 
