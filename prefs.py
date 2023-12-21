@@ -3,7 +3,7 @@ import requests
 from availability_check import availability_check
 from config import format_viewbook_url
 import globals
-from args import Args
+from args import parse_args
 
 from urllib3.exceptions import InsecureRequestWarning
 
@@ -59,7 +59,7 @@ FIELDS = {
 }
 
 
-def parse_fields(args: Args):
+def parse_fields(args):
     fields = []
     for field in args.fields:
         if isinstance(field, int):
