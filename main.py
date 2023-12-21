@@ -69,7 +69,7 @@ def update_data(prefSession, args):
         )
 
 
-def recalibrate_time():
+def calibrate_local_time():
     globals.time_difference = time_calibration()
 
 
@@ -94,9 +94,7 @@ def get_book_time(args):
         target_date = now.date() + timedelta(days=1)
     else:
         target_date = now.date()
-
-    if args.booknow:
-        target_date = now.date()
+        
     book_time = datetime.datetime.combine(
         target_date, datetime.time(8, 0, 0, 0)
     )
@@ -112,14 +110,14 @@ def book_main(args):
     actual_book_time, update_data_time, calib_time = get_preparation_time(
         book_time
     )
-    log(f"Book time is set to {book_time}")
-    log(f"Actual book time is set to {actual_book_time}")
-    log(f"Update data time is set to {update_data_time}")
-    log(f"Calibration time is set to {calib_time}")
+    log(f"Scheduled book time is set to {book_time}.")
+    log(f"Optimized book time is set to {actual_book_time}.")
+    log(f"Data update time is set to {update_data_time}.")
+    log(f"Calibration time is set to {calib_time}.")
     timestamp_recalibration = (
         time.mktime(calib_time.timetuple()) + calib_time.microsecond / 1e6
     )
-    s.enterabs(timestamp_recalibration, 1, recalibrate_time)
+    s.enterabs(timestamp_recalibration, 1, calibrate_local_time)
 
     s.enterabs(
         time.mktime(update_data_time.timetuple())
@@ -162,5 +160,4 @@ if __name__ == "__main__":
     if args.booknow:
         args.gym = "Tennis"
         args.paymentmethod = 1
-    print(args)
     book_main(args)
