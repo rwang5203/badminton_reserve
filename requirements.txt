@@ -1,6 +1,7 @@
+ntplib
+numpy
 opencv-python
+requests
 selenium
 torch
-numpy
-requests
 typed-argument-parser
