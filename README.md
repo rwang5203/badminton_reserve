@@ -8,7 +8,7 @@ Installed the python environment (PyTorch, Selenium, OpenCV, typed-argument-pars
 pip install -r requirements.txt
 ```
 
-Run the following command:
+For example, if you would like to reserve for Qimo of courts 4-10 with online payment method, you can run the following command:
 
 ```shell
 python main.py --studentid <Your Student ID> --phone <Your Phone Number> --password <Your Password> --fields 4 5 6 7 8 9 10 --gym Qimo --paymentmethod 1
@@ -16,7 +16,7 @@ python main.py --studentid <Your Student ID> --phone <Your Phone Number> --passw
 
 Run `python main.py -h` to see all arguments.
 
-> Make sure your local system's clock is calibrated. You can calibrate local time with TUNA NTP server `ntp.tuna.tsinghua.edu.cn` in advance to your booking.
+> Make sure your local system's time is calibrated. You can calibrate the local time with Tsinghua NTP server `ntp.tuna.tsinghua.edu.cn` in advance to your booking.
 
 ## TODOs
 
