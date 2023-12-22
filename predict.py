@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 from model.cnn import CNN
 
-model_path = "./model/cnn.pth"
+CNN_PATH = "./model/cnn.pth"
 
 # Captcha Alphabet (0-9, a-z, A-Z)
 source = [str(i) for i in range(0, 10)]
@@ -11,7 +11,7 @@ source += [chr(i) for i in range(65, 65 + 26)]
 alphabet = "".join(source)
 
 
-def predict_captcha(device: str, img_tensor: torch.Tensor, cnn) -> str:
+def predict_captcha(device: str, img_tensor: torch.Tensor, cnn: CNN) -> str:
     if device == "cuda":
         img_tensor = img_tensor.cuda()
     img_tensor = img_tensor.view(1, 1, 50, 200)
@@ -29,9 +29,9 @@ def preload_model(device: str):
     if device == "cuda":
         cnn = cnn.cuda()
         cnn.eval()
-        cnn.load_state_dict(torch.load(model_path))
+        cnn.load_state_dict(torch.load(CNN_PATH))
     elif device == "cpu":
         cnn.eval()
-        model = torch.load(model_path, map_location=device)
+        model = torch.load(CNN_PATH, map_location=device)
         cnn.load_state_dict(model)
     return cnn

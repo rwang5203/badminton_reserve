@@ -1,9 +1,8 @@
 import argparse
-from typing import List
 
-def parse_args():
+
+def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Script to book badminton courts")
-
     parser.add_argument('--studentid', type=str, required=True, help='Student ID')
     parser.add_argument('--password', type=str, required=True, help='Password')
     parser.add_argument('--phone', type=str, required=True, help='Phone number')
@@ -11,9 +10,9 @@ def parse_args():
     parser.add_argument('--booknow', action='store_true', help='If set, book immediately (for testing)')
     parser.add_argument('--gym', type=str, default='Qimo', choices=['Qimo', 'Zongti', 'Xiti', 'Tennis'], help='Gym location')
     parser.add_argument('--fields', nargs='+', type=int, default=[12, 11, 10, 9, 8, 7], help='Target fields as a list of integers')
-
     args = parser.parse_args()
     return args
+
 
 if __name__ == "__main__":
     args = parse_args()

@@ -1,9 +1,11 @@
 import datetime
 from datetime import timedelta
-import requests
-import sched
 import time
 from typing import Tuple
+import json
+
+import requests
+import sched
 
 from automate import automateLogin
 from book_court import book_courts, prepare_book_data
@@ -41,7 +43,7 @@ def update_data(prefSession, args):
         globals.password,
         globals.prefGymID,
         globals.prefItemID,
-        args.headless,
+        # args.headless,
     )
     log(f"You are logged in as {globals.userName}")
     globals.book_headers = format_book_header(
@@ -94,7 +96,7 @@ def get_book_time(args):
         target_date = now.date() + timedelta(days=1)
     else:
         target_date = now.date()
-        
+
     book_time = datetime.datetime.combine(
         target_date, datetime.time(8, 0, 0, 0)
     )
@@ -103,6 +105,7 @@ def get_book_time(args):
 
 def book_main(args):
     log("Initialized the script.")
+    print(json.dumps(vars(args), indent=4))
     prefSession = requests.Session()
     s = sched.scheduler(time.time, time.sleep)
 
@@ -133,7 +136,7 @@ def book_main(args):
     )
 
     calibration_done = False
-    
+
     while True:
         if not calibration_done and globals.time_difference is not None:
             time_adjustment = datetime.timedelta(
