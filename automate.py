@@ -11,7 +11,7 @@ def automateLogin(STUDENT_ID: str, PASSWORD: str, GYM_ID: str, ITEM_ID: str):
     # Linux
     if platform.system() == "Linux":
         chrome_driver_path = "./chromedriver_linux64"
-        
+
         chrome_options = webdriver.ChromeOptions()
         chrome_options.add_experimental_option("detach", True)
         chrome_options.add_argument("--headless=new")
@@ -20,13 +20,13 @@ def automateLogin(STUDENT_ID: str, PASSWORD: str, GYM_ID: str, ITEM_ID: str):
         chrome_options.add_experimental_option(
             "excludeSwitches", ["enable-logging"]
         )
-        
+
         driver = webdriver.Chrome(options=chrome_options)
-        
-    # Windows 
+
+    # Windows
     elif platform.system() == "Windows":
         chrome_driver_path = "./chromedriver.exe"
-        
+
         chrome_options = webdriver.ChromeOptions()
         chrome_options.add_experimental_option("detach", True)
         chrome_options.add_argument("--headless=new")
@@ -41,6 +41,8 @@ def automateLogin(STUDENT_ID: str, PASSWORD: str, GYM_ID: str, ITEM_ID: str):
         driver = webdriver.Chrome(service=service, options=chrome_options)
 
     # TODO: "Darwin" for macOS arm64 and x64
+    else:
+        raise NotImplementedError
 
     driver.get("https://50.tsinghua.edu.cn/dl.jsp")
 

@@ -1,7 +1,7 @@
 import argparse
-from typing import List
 
-def parse_args():
+
+def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Script to book badminton courts")
 
     parser.add_argument("--studentid", nargs="+", type=str, required=True, help="List of Student IDs")
@@ -22,6 +22,7 @@ def parse_args():
         raise ValueError("The number of student IDs, passwords, and phone numbers should match the number specified in --multiuser")
 
     return args
+
 
 if __name__ == "__main__":
     args = parse_args()
