@@ -9,7 +9,7 @@ def time_calibration():
     ntp_time = datetime.datetime.utcfromtimestamp(response.tx_time)
     local_time = datetime.datetime.utcnow()
     time_difference = local_time - ntp_time
-    print("Time difference (ms):", time_difference.total_seconds() * 1e6)
+    print("Time difference (ms):", time_difference.total_seconds() * 1e3)
     return time_difference.total_seconds() * 1e6
 
 
