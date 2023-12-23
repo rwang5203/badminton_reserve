@@ -1,18 +1,27 @@
-from tap import Tap
-from typing import Literal, List
+import argparse
+from typing import List
 
+def parse_args():
+    parser = argparse.ArgumentParser(description="Script to book badminton courts")
 
-class Args(Tap):
-    studentid: str  # 学号
-    password: str  # 密码
-    phone: str  # 手机号码
-    paymentmethod: int = 0  # (0 for on-site payment, 1 for online payment)
-    booknow: bool = False  # Book immediately, for testing.
+    parser.add_argument("--studentid", nargs="+", type=str, required=True, help="List of Student IDs")
+    parser.add_argument("--password", nargs="+", type=str, required=True, help="List of Passwords")
+    parser.add_argument("--phone", nargs="+", type=str, required=True, help="List of Phone numbers")
 
-    gym: Literal['Qimo', 'Zongti', 'Xiti', 'Tennis'] = 'Qimo'
-    '''[气膜："Qimo", 综体："Zongti", 西体："Xiti"]'''
+    parser.add_argument("--paymentmethod", type=int, default=0, choices=[0, 1], help="Payment method: 0 for on-site, 1 for online")
+    parser.add_argument("--booknow", action="store_true", help="If set, book immediately (for testing)")
+    
+    parser.add_argument("--multiuser", type=int, default=1, help="Number of users to book for")
 
-    fields: List[int] = [12, 11, 10]
-    '''
-    目标场地，用 int 来表示，例如：3 -> 三号场地，比如气膜的 "羽03".
-    '''
+    parser.add_argument("--gym", type=str, default="Qimo", choices=["Qimo", "Zongti", "Xiti", "Tennis"], help="Target gym")
+    parser.add_argument("--fields", nargs="+", type=int, default=[12, 11, 10, 9, 8, 7], help="Target fields as a list of integers")
+
+    args = parser.parse_args()
+
+    if args.multiuser != len(args.studentid) or args.multiuser != len(args.password) or args.multiuser != len(args.phone):
+        raise ValueError("The number of student IDs, passwords, and phone numbers should match the number specified in --multiuser")
+
+    return args
+
+if __name__ == "__main__":
+    args = parse_args()
