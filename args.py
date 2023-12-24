@@ -1,7 +1,7 @@
 import argparse
 
 
-def parse_args():
+def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Script to book badminton courts")
 
     parser.add_argument("--studentid", nargs="+", type=str, required=True, help="List of Student IDs")

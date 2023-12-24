@@ -38,5 +38,6 @@ driver = webdriver.Chrome(service=service, options=chrome_options)
 
 ## TODOs
 
-- Code adaptation to macOS and performance testing (automate.py & book_court.py)
+- Code adaptation to macOS and performance testing (automate.py, book_court.py)
+- Concurrent multiuser booking (main.py, book_court.py, globals.py)
 - AliPay automatic payment (automate.py)
