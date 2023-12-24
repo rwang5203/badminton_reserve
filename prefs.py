@@ -151,34 +151,15 @@ def get_prefs(session: requests.Session, args):
     resp = session.get(globals.viewbookURL)
     empty_courts, empty_court_ids = availability_check(resp.text)
     pref_sessions = list(empty_courts.keys())
-    pref_sessions.reverse()
+    pref_sessions.reverse()  # Prioritize later sessions
 
     if globals.prefGymNameEN == "Qimo":
         pass
-        # 气膜羽毛球
-        # globals.prefGymNameCN = "气膜馆羽毛球场"
-        # globals.prefGymID = "3998000"
-        # globals.prefItemID = "4045681"
     elif globals.prefGymNameEN == "Zongti":
-        # 综体羽毛球
-        # globals.prefGymNameCN = "综体羽毛球场"
-        # globals.prefGymID = "4797914"
-        # globals.prefItemID = "4797899"
-
-        # Sessions Swap: [2, 1, 0, 3] instead of [0, 1, 2, 3]
         pref_sessions[0], pref_sessions[2] = pref_sessions[2], pref_sessions[0]
-        # PREF_SESSIONS[1], PREF_SESSIONS[3] = PREF_SESSIONS[3], PREF_SESSIONS[1]
     elif globals.prefGymNameEN == "Xiti":
-        # 西体羽毛球
-        # globals.prefGymNameCN = "西体羽毛球场"
-        # globals.prefGymID = "4836273"
-        # globals.prefItemID = "4836196"
         pref_sessions[0], pref_sessions[1] = pref_sessions[1], pref_sessions[0]
     elif globals.prefGymNameEN == "Tennis":
-        # 紫网测试
-        # globals.prefGymNameCN = "紫荆网球场(测试)"
-        # globals.prefGymID = "5843934"
-        # globals.prefItemID = "5845263"
         pass
 
     # Find preferred fields and sessions

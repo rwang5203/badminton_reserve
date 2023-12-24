@@ -4,4 +4,3 @@ opencv-python
 requests
 selenium
 torch
-typed-argument-parser

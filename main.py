@@ -152,6 +152,7 @@ def book_main(args):
                 time.mktime(target_time_3.timetuple())
                 + target_time_3.microsecond / 1e6
             )
+            log(f"Book time is set to {target_time_3}.")
             s.enterabs(timestamp_3, 1, book_courts)
             calibration_done = True
 
