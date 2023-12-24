@@ -201,11 +201,15 @@ def spawn_multiple_users(args: Namespace):
 
 if __name__ == "__main__":
     args = parse_args()
+    print(vars(args))
     # if args.booknow:
     #     args.gym = "Tennis"
     #     args.paymentmethod = 1
     if len(args.studentid) == 1:
         # If only one user is specified, only book courts for this user.
+        args.studentid = args.studentid[0]
+        args.password = args.password[0]
+        args.phone = args.phone[0]
         book_main(args)
     else:
         spawn_multiple_users(args)
