@@ -1,8 +1,10 @@
 import datetime
 from datetime import timedelta
 import time
+from argparse import Namespace
 from typing import Tuple
 import json
+import subprocess
 
 import requests
 import sched
@@ -20,7 +22,7 @@ from args import parse_args
 from utils import log, get_time_diff
 
 
-def update_data(prefSession, args):
+def update_data(prefSession: requests.Session, args: Namespace):
     globals.book_date = str(datetime.date.today() + timedelta(days=3))
     globals.cuda_device = "cpu"
     globals.recognition_model = preload_model(globals.cuda_device)
@@ -157,9 +159,53 @@ def book_main(args):
         time.sleep(0.02)
 
 
+def spawn_multiple_users(args: Namespace):
+    '''
+    When multiple users are specified, this function will spawn multiple
+    processes to book courts for each user.
+    '''
+    fields = args.fields
+    n_users = len(args.studentid)
+    n_fields = len(fields)
+    n_per_user = n_fields // n_users
+
+    for i in range(n_users):
+        '''
+        Rolling fields, to ensure that this user will also try to book
+        other fields when its targets are unavailable.
+        In other words, if the specified fields are: [1, 2, 3, 4, 5, 6, 7],
+        and there are 2 users, then the --fields argument for them are:
+        - User 1: [1, 2, 3, 4, 5, 6, 7]
+        - User 2: [4, 5, 6, 7, 1, 2, 3]
+        This means that User 2 will prioritize courts 4, 5, 6, 7, but will
+        also try to book courts 1, 2, 3 if courts 4, 5, 6, 7 are unavailable.
+        '''
+        idx_offset = i * n_per_user
+        this_fields = [fields[(i + idx_offset) % n_fields] for i in range(0, n_fields)]
+        student_id = args.studentid[i]
+        password = args.password[i]
+        phone_number = args.phone[i]
+        this_args = ["python", "main.py"]
+        this_args += ["--studentid", student_id]
+        this_args += ["--password", password]
+        this_args += ["--phone", phone_number]
+        this_args += ["--paymentmethod", str(args.paymentmethod)]
+        if args.booknow:
+            this_args += ["--booknow"]
+        # this_args += ["--multiuser", "1"]
+        this_args += ["--gym", args.gym]
+        this_args += ["--fields"] + [str(x) for x in this_fields]
+        print("############### Calling: ", this_args)
+        subprocess.Popen(this_args)
+
+
 if __name__ == "__main__":
     args = parse_args()
     # if args.booknow:
     #     args.gym = "Tennis"
     #     args.paymentmethod = 1
-    book_main(args)
+    if len(args.studentid) == 1:
+        # If only one user is specified, only book courts for this user.
+        book_main(args)
+    else:
+        spawn_multiple_users(args)

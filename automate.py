@@ -25,7 +25,7 @@ def automateLogin(STUDENT_ID: str, PASSWORD: str, GYM_ID: str, ITEM_ID: str):
 
     # Windows
     elif platform.system() == "Windows":
-        chrome_driver_path = "./chromedriver.exe"
+        chrome_driver_path = "./drivers/chromedriver.exe"
 
         chrome_options = webdriver.ChromeOptions()
         chrome_options.add_experimental_option("detach", True)
