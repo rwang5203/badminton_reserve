@@ -9,7 +9,6 @@ import sched
 
 from automate import automateLogin
 from book_court import book_courts, prepare_book_data
-from calibrate import time_calibration
 from predict import preload_model
 from prefs import get_prefs
 from config import (
@@ -18,7 +17,7 @@ from config import (
 )
 import globals
 from args import parse_args
-from utils import log
+from utils import log, get_time_diff
 
 
 def update_data(prefSession, args):
@@ -72,7 +71,7 @@ def update_data(prefSession, args):
 
 
 def calibrate_local_time():
-    globals.time_difference = time_calibration()
+    globals.time_difference = get_time_diff()
 
 
 def get_preparation_time(
