@@ -5,10 +5,10 @@ import ntplib
 NTP_SERVER = "ntp.tuna.tsinghua.edu.cn"
 
 
-def log(msg: str):
-    print(
-        "[" + datetime.datetime.now().strftime("%H:%M:%S.%f")[:-3] + "] " + msg
-    )
+def log(*args, **kwargs):
+    cur_time = datetime.datetime.now().strftime("%H:%M:%S.%f")[:-3]
+    print(f"[{cur_time}] ", end='')
+    print(*args, **kwargs)
 
 
 def get_time_diff():
