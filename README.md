@@ -24,7 +24,7 @@ This code can also automatically distribute fields to multiple users such that e
 
 ```shell
 python main.py --studentid <ID of user 1> <ID of user 2> --phone <Phone number of user 1> <Phone number of user 2> --password <Password of user 1> <Password of user 2> --fields 4 5 6 7 8 9 10 --gym Qimo --paymentmethod 1
-···
+```
 
 Then, this code will spawn one process for each user, and each user will have different priorities of fields.
 
