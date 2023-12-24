@@ -3,9 +3,10 @@ from availability_check import availability_check
 from config import format_viewbook_url
 import globals
 from urllib3.exceptions import InsecureRequestWarning
+import urllib3
 from utils import log
 
-requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+urllib3.disable_warnings(InsecureRequestWarning)
 
 # Qimo Courts: [羽01, 羽02, 羽03, 羽04, 羽05, 羽06, 羽07, 羽08, 羽09, 羽10, 羽11, 羽12]
 #       +--+--+--+--+--+--+
