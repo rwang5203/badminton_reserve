@@ -160,7 +160,7 @@ def book_main(args):
 
 if __name__ == "__main__":
     args = parse_args()
-    if args.booknow:
-        args.gym = "Tennis"
-        args.paymentmethod = 1
+    # if args.booknow:
+    #     args.gym = "Tennis"
+    #     args.paymentmethod = 1
     book_main(args)

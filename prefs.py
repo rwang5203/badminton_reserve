@@ -138,8 +138,8 @@ def get_prefs(session: requests.Session, args):
     # [气膜："Qimo", 综体："Zongti", 西体："Xiti"]
     globals.prefGymNameEN = args.gym
     pref_fields = parse_fields(args)
-    log("Target Gym:", args.gym)
-    log("Target Courts:", pref_fields)
+    log(f"Target Gym: {args.gym}")
+    log(f"Target Courts: {pref_fields}")
 
     globals.prefGymNameCN = GYN_NAME_CN[args.gym]
     globals.prefGymID = GYM_ID[args.gym]
