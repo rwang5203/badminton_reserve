@@ -15,7 +15,7 @@ from automate import automatePay
 from availability_check import availability_update
 import globals
 import config
-from predict import predict_captcha
+from captcha import predict_captcha
 from utils import log
 
 
@@ -30,14 +30,14 @@ def book_courts():
         verify=False,
     )
     log(
-        f"Booking {globals.index+1}/{len(globals.prefCourtTokens)}: 【{globals.prefGymNameCN} {globals.book_date} {globals.prefCourtInfos[globals.index % len(globals.prefCourtTokens)]}】..."
+        f"Booking {globals.index+1}/{len(globals.target_court_tokens)}: 【{globals.target_gym_name_zh} {globals.target_date} {globals.target_court_infos[globals.index % len(globals.target_court_tokens)]}】..."
     )
     if "预定成功" in json.loads(book_resp.text)["msg"]:
         log(
-            f"Booked: {globals.prefGymNameCN} {globals.book_date} {globals.prefCourtInfos[globals.index % len(globals.prefCourtTokens)]}"
+            f"Booked: {globals.target_gym_name_zh} {globals.target_date} {globals.target_court_infos[globals.index % len(globals.target_court_tokens)]}"
         )
         automatePay(
-            globals.chromeDriver,
+            globals.chrome_driver,
             globals.session,
             globals.serverid,
             globals.jsessionid,
@@ -54,7 +54,7 @@ def book_courts():
     book_count = 0
     update_lapse = 0
 
-    while globals.prefCourtTokens and book_count < 12 and success_count < 1:
+    while globals.target_court_tokens and book_count < 12 and success_count < 1:
         if book_count > 0:
             start_time = time.time()
             prepare_book_data()
@@ -71,7 +71,7 @@ def book_courts():
         )
 
         log(
-            f"Booking {globals.index+1}/{len(globals.prefCourtTokens)}: 【{globals.prefGymNameCN} {globals.book_date} {globals.prefCourtInfos[globals.index % len(globals.prefCourtTokens)]}】..."
+            f"Booking {globals.index+1}/{len(globals.target_court_tokens)}: 【{globals.target_gym_name_zh} {globals.target_date} {globals.target_court_infos[globals.index % len(globals.target_court_tokens)]}】..."
         )
         if book_resp.status_code == 200:
             book_result = json.loads(book_resp.text)["msg"]
@@ -79,12 +79,12 @@ def book_courts():
             if "预定成功" in book_result:
                 success_count += 1
                 success_court_infos.append(
-                    globals.prefGymNameCN
+                    globals.target_gym_name_zh
                     + " "
-                    + globals.book_date
+                    + globals.target_date
                     + " "
-                    + globals.prefCourtInfos[
-                        globals.index % len(globals.prefCourtTokens)
+                    + globals.target_court_infos[
+                        globals.index % len(globals.target_court_tokens)
                     ]
                 )
             elif "超过预定场地数量限额" in book_result:
@@ -106,7 +106,7 @@ def book_courts():
                 f"[No. {globals.index+1}] 【{success_court_infos[globals.index]}】"
             )
         automatePay(
-            globals.chromeDriver,
+            globals.chrome_driver,
             globals.session,
             globals.serverid,
             globals.jsessionid,
@@ -137,16 +137,16 @@ def prepare_book_data():
     )
     captcha_img, captcha_tensor = read_image_bytes(captcha.content)
     globals.captcha_label = predict_captcha(
-        globals.cuda_device, captcha_tensor, globals.recognition_model
+        globals.infer_device, captcha_tensor, globals.captcha_recognizer
     )
     globals.book_data = config.format_book_data(
-        globals.prefCourtCosts,
+        globals.target_court_costs,
         globals.index,
-        globals.prefCourtTokens,
-        globals.phone_number,
-        globals.prefGymID,
-        globals.prefItemID,
-        globals.book_date,
+        globals.target_court_tokens,
+        globals.phone,
+        globals.target_gym_id,
+        globals.target_gym_item_id,
+        globals.target_date,
         globals.captcha_label,
         globals.payment_method,
     )

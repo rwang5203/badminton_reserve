@@ -1,9 +1,10 @@
 import requests
-from availability_check import availability_check
+from availability_check import get_available_courts
 from config import format_viewbook_url
 import globals
 from urllib3.exceptions import InsecureRequestWarning
 import urllib3
+from typing import List
 from utils import log
 
 urllib3.disable_warnings(InsecureRequestWarning)
@@ -94,42 +95,48 @@ FIELDS = {
     },
 }
 
-GYN_NAME_CN = {
-    "Qimo": '气膜馆羽毛球场',
-    "Zongti": '综体羽毛球场',
-    "Xiti": '西体羽毛球场',
-    "Tennis": '紫荆网球场（测试）',
+GYM_NAMES_ZH = {
+    "Qimo": "气膜馆羽毛球场",
+    "Zongti": "综体羽毛球场",
+    "Xiti": "西体羽毛球场",
+    "Tennis": "紫荆网球场（测试）",
 }
 
-GYM_ID = {
-    "Qimo": '3998000',
-    "Zongti": '4797914',
-    "Xiti": '4836273',
-    "Tennis": '5843934',
+GYM_IDS = {
+    "Qimo": "3998000",
+    "Zongti": "4797914",
+    "Xiti": "4836273",
+    "Tennis": "5843934",
 }
 
-ITEM_ID = {
-    "Qimo": '4045681',
-    "Zongti": '4797899',
-    "Xiti": '4836196',
-    "Tennis": '5845263',
+ITEM_IDS = {
+    "Qimo": "4045681",
+    "Zongti": "4797899",
+    "Xiti": "4836196",
+    "Tennis": "5845263",
 }
 
 
-def parse_fields(args):
-    fields = []
-    for field in args.fields:
+def parse_fields(fields: List[int], target_gym_name: str) -> List[str]:
+    parsed_fields = []
+    for field in fields:
         if isinstance(field, int):
-            fields.append(FIELDS[args.gym][field])
+            parsed_fields.append(FIELDS[target_gym_name][field])
         elif isinstance(field, str):
-            fields.append(field)
+            parsed_fields.append(field)
         else:
             raise TypeError(f"Invalid court: {field}")
-    assert len(fields) == len(args.fields)
-    return fields
+    assert len(fields) == len(fields)
+    return parsed_fields
 
 
-def get_prefs(session: requests.Session, args):
+def get_available_target_courts(
+    session: requests.Session,
+    target_gym_name: str,
+    fields: List[int],
+    preference: str = "late",
+    accept_free_courts: bool = False,
+) -> dict:
     """
     Get the reservation preferences for a given date.
 
@@ -137,45 +144,65 @@ def get_prefs(session: requests.Session, args):
         session (requests.Session): The request session to use.
     """
     # [气膜："Qimo", 综体："Zongti", 西体："Xiti"]
-    globals.prefGymNameEN = args.gym
-    pref_fields = parse_fields(args)
-    log(f"Target Gym: {args.gym}")
-    log(f"Target Courts: {pref_fields}")
-
-    globals.prefGymNameCN = GYN_NAME_CN[args.gym]
-    globals.prefGymID = GYM_ID[args.gym]
-    globals.prefItemID = ITEM_ID[args.gym]
-    globals.viewbookURL = format_viewbook_url(
-        globals.prefGymID, globals.prefItemID, globals.book_date
+    globals.target_gym_name = target_gym_name
+    pref_fields: List[str] = parse_fields(
+        fields,
+        target_gym_name=target_gym_name,
     )
-    resp = session.get(globals.viewbookURL)
-    empty_courts, empty_court_ids = availability_check(resp.text)
-    pref_sessions = list(empty_courts.keys())
-    pref_sessions.reverse()  # Prioritize later sessions
+    log(f"Target gym: {target_gym_name}")
+    log(f"Target courts: {pref_fields}")
 
-    if globals.prefGymNameEN == "Qimo":
+    globals.target_gym_name_zh = GYM_NAMES_ZH[target_gym_name]
+    globals.target_gym_id = GYM_IDS[target_gym_name]
+    globals.target_gym_item_id = ITEM_IDS[target_gym_name]
+    globals.view_book_url = format_viewbook_url(
+        globals.target_gym_id,
+        globals.target_gym_item_id,
+        globals.target_date,
+    )
+    resp = session.get(globals.view_book_url)
+
+    log("Checking for availability...")
+    all_court_data, empty_court_ids = get_available_courts(resp.text)
+    log(f"{empty_court_ids = }")
+    target_sessions = list(all_court_data.keys())
+
+    if preference == 'early':
+        target_sessions = target_sessions[3:]
+    elif preference == 'noon':
+        target_sessions = target_sessions[len(target_sessions) // 2 :]  # 约中午
+    elif preference == 'late':
+        target_sessions.reverse()  # Prioritize later sessions
+
+    log(f"Target sessions (ordered by priority): {target_sessions}")
+
+    if globals.target_gym_name == "Qimo":
         pass
-    elif globals.prefGymNameEN == "Zongti":
-        pref_sessions[0], pref_sessions[2] = pref_sessions[2], pref_sessions[0]
-    elif globals.prefGymNameEN == "Xiti":
-        pref_sessions[0], pref_sessions[1] = pref_sessions[1], pref_sessions[0]
-    elif globals.prefGymNameEN == "Tennis":
+    elif globals.target_gym_name == "Zongti":
+        target_sessions[0], target_sessions[2] = target_sessions[2], target_sessions[0]
+    elif globals.target_gym_name == "Xiti":
+        target_sessions[0], target_sessions[1] = target_sessions[1], target_sessions[0]
+    elif globals.target_gym_name == "Tennis":
         pass
 
     # Find preferred fields and sessions
-    for i in pref_sessions:
+    target_costs: List[str] = []
+    target_infos: List[str] = []
+    target_ids: List[str] = []
+    target_tokens: List[str] = []
+    for i in target_sessions:
         for j in pref_fields:
             if (
-                empty_courts[i][j]["Court ID"] in empty_court_ids
-                and empty_courts[i][j]["Court Cost"] != "0.0"
+                all_court_data[i][j]["Court ID"] in empty_court_ids
             ):
-                globals.prefCourtCosts.append(
-                    empty_courts[i][j]["Court Cost"]
-                )
-                globals.prefCourtIDs.append(
-                    empty_courts[i][j]["Court ID"]
-                )
-                globals.prefCourtInfos.append(i + " " + j)
-                globals.prefCourtTokens.append(
-                    empty_courts[i][j]["Court Token"]
-                )
+                if all_court_data[i][j]["Court Cost"] != "0.0" or accept_free_courts:
+                    target_costs.append(all_court_data[i][j]["Court Cost"])
+                    target_ids.append(all_court_data[i][j]["Court ID"])
+                    target_infos.append(i + " " + j)
+                    target_tokens.append(all_court_data[i][j]["Court Token"])
+    return {
+        "costs": target_costs,
+        "infos": target_infos,
+        "ids": target_ids,
+        "tokens": target_tokens,
+    }

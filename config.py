@@ -1,12 +1,8 @@
 # URLs for Court Reservation
-ALIVE_URL = (
-    "https://50.tsinghua.edu.cn/gymbook/gymBookAction.do?ms=viewGymBook"
-)
+ALIVE_URL = "https://50.tsinghua.edu.cn/gymbook/gymBookAction.do?ms=viewGymBook"
 LOGIN_URL = "https://50.tsinghua.edu.cn/j_spring_security_check"
 HOMEPAGE_URL = "http://50.tsinghua.edu.cn/gymsite/cacheAction.do?ms=viewIndex"
-PHONE_URL = (
-    "https://50.tsinghua.edu.cn/gymbook/gymBookAction.do?ms=hadContactOrNot"
-)
+PHONE_URL = "https://50.tsinghua.edu.cn/gymbook/gymBookAction.do?ms=hadContactOrNot"
 BOOK_URL = "https://50.tsinghua.edu.cn/gymbook/gymBookAction.do?ms=saveGymBook"
 ORDER_URL = "https://50.tsinghua.edu.cn/pay/payAction.do?ms=getOrdersForNopay"
 CAPTCHA_URL = "https://50.tsinghua.edu.cn/Kaptcha.jpg"
@@ -18,19 +14,27 @@ THU_PAY_URL = "http://fa-online.tsinghua.edu.cn/zjjsfw/zjjs/api.do"
 
 
 # Format Headers and URL
-def format_viewbook_url(GYM_ID, ITEM_ID, BOOK_DATE) -> str:
-    return f"https://50.tsinghua.edu.cn/gymsite/cacheAction.do?ms=viewBook&gymnasium_id={GYM_ID}&item_id={ITEM_ID}&time_date={BOOK_DATE}&userType=1"
+def format_viewbook_url(
+    gym_id: str,
+    item_id: str,
+    book_date: str,
+) -> str:
+    return f"https://50.tsinghua.edu.cn/gymsite/cacheAction.do?ms=viewBook&gymnasium_id={gym_id}&item_id={item_id}&time_date={book_date}&userType=1"
 
 
 def format_captcha_header(
-    SERVER_ID, JSESSION_ID, GYM_ID, ITEM_ID, BOOK_DATE
+    server_id,
+    jsession_id,
+    gym_id: str,
+    item_id: str,
+    book_date: str,
 ) -> dict:
     captcha_header = {
         "accept": "image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
         "accept-encoding": "gzip, deflate, br",
         "accept-language": "zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6",
-        "cookie": f"serverid={SERVER_ID}; JSESSIONID={JSESSION_ID}",
-        "referer": f"https://50.tsinghua.edu.cn/gymbook/gymBookAction.do?ms=viewGymBook&gymnasium_id={GYM_ID}&item_id={ITEM_ID}&time_date={BOOK_DATE}&userType=",
+        "cookie": f"serverid={server_id}; JSESSIONID={jsession_id}",
+        "referer": f"https://50.tsinghua.edu.cn/gymbook/gymBookAction.do?ms=viewGymBook&gymnasium_id={gym_id}&item_id={item_id}&time_date={book_date}&userType=",
         "sec-ch-ua": '"Google Chrome";v="119", "Chromium";v="119", "Not?A_Brand";v="24"',
         "sec-ch-ua-mobile": "?0",
         "sec-ch-ua-platform": '"Windows"',
@@ -43,7 +47,11 @@ def format_captcha_header(
 
 
 def format_book_header(
-    SERVER_ID, JSESSION_ID, GYM_ID, ITEM_ID, BOOK_DATE
+    server_id,
+    jsession_id,
+    gym_id: str,
+    item_id: str,
+    book_date: str,
 ) -> dict:
     book_header = {
         "host": "50.tsinghua.edu.cn",
@@ -52,9 +60,9 @@ def format_book_header(
         "accept-language": "en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7",
         "content-length": "339",
         "content-type": "application/x-www-form-urlencoded",
-        "cookie": f"serverid={SERVER_ID}; JSESSIONID={JSESSION_ID}",
+        "cookie": f"serverid={server_id}; JSESSIONID={jsession_id}",
         "origin": "https://50.tsinghua.edu.cn",
-        "referer": f"https://50.tsinghua.edu.cn/gymbook/gymBookAction.do?ms=viewGymBook&gymnasium_id={GYM_ID}&item_id={ITEM_ID}&time_date={BOOK_DATE}&userType=",
+        "referer": f"https://50.tsinghua.edu.cn/gymbook/gymBookAction.do?ms=viewGymBook&gymnasium_id={gym_id}&item_id={item_id}&time_date={book_date}&userType=",
         "sec-ch-ua": '"Google Chrome";v="119", "Chromium";v="119", "Not?A_Brand";v="24"',
         "sec-ch-ua-mobile": "?0",
         "sec-ch-ua-platform": '"Windows"',
@@ -68,34 +76,35 @@ def format_book_header(
 
 
 def format_book_data(
-    COSTS: list,
-    INDEX: int,
-    TOKENS: list,
-    PHONE_NUMBER: str,
-    GYM_ID: str,
-    ITEM_ID: str,
-    BOOK_DATE: str,
-    CAPTCHA_LABEL: str,
-    PAYMENT_METHOD: int,
+    costs: list,
+    index: int,
+    tokens: list,
+    phone_num: str,
+    gym_id: str,
+    item_id: str,
+    book_date: str,
+    captcha_label: str,
+    payment_method: str = "offline",
 ) -> dict:
+    print("COSTS:", costs)
     book_data = {
-        "bookData.totalCost": COSTS[INDEX % len(TOKENS)],
+        "bookData.totalCost": costs[index % len(tokens)],
         "bookData.book_person_zjh": "",
         "bookData.book_person_name": "",
-        "bookData.book_person_phone": PHONE_NUMBER,
-        "gymnasium_idForCache": GYM_ID,
-        "item_idForCache": ITEM_ID,
-        "time_dateForCache": BOOK_DATE,
+        "bookData.book_person_phone": phone_num,
+        "gymnasium_idForCache": gym_id,
+        "item_idForCache": item_id,
+        "time_dateForCache": book_date,
         "userTypeNumForCache": "1",
-        "code": CAPTCHA_LABEL,
+        "code": captcha_label,
         "putongRes": "putongRes",
-        "selectedPayWay": PAYMENT_METHOD,
-        "allFieldTime": TOKENS[INDEX % len(TOKENS)] + "#" + BOOK_DATE,
+        "selectedPayWay": 1 if payment_method == "online" else 0,
+        "allFieldTime": tokens[index % len(tokens)] + "#" + book_date,
     }
     return book_data
 
 
-def format_pay_header(SERVER_ID, JSESSION_ID) -> dict:
+def format_pay_header(server_id, jsession_id) -> dict:
     pay_header = {
         "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
         "accept-encoding": "gzip, deflate, br",
@@ -103,7 +112,7 @@ def format_pay_header(SERVER_ID, JSESSION_ID) -> dict:
         "cache-control": "max-age=0",
         "content-length": "43",
         "content-type": "application/x-www-form-urlencoded",
-        "cookie": f"JSESSIONID={JSESSION_ID}; serverid={SERVER_ID}",
+        "cookie": f"JSESSIONID={jsession_id}; serverid={server_id}",
         "origin": "https://50.tsinghua.edu.cn",
         "referer": "https://50.tsinghua.edu.cn/pay/payAction.do?ms=getOrdersForNopay",
         "sec-ch-ua": '"Google Chrome";v="119", "Chromium";v="119", "Not?A_Brand";v="24"',

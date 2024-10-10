@@ -3,8 +3,8 @@ from torch import Tensor
 
 
 class CNN(nn.Module):
-    def __init__(self, num_class=62, num_char=4):
-        super(CNN, self).__init__()
+    def __init__(self, num_class: int = 62, num_char: int = 4):
+        super().__init__()
         self.num_class = num_class
         self.num_char = num_char
         self.conv = nn.Sequential(

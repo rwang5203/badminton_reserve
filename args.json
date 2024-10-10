@@ -1,0 +1,8 @@
+{
+    "gym": "Qimo",
+    "fields": [3, 4, 5, 6, 2, 1, 8, 11, 12, 8, 7, 10, 9],
+    "booknow": false,
+    "paymentmethod": "offline",
+    "days_from_now": 3,
+    "accept_free_courts": 0
+}

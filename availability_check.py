@@ -1,19 +1,20 @@
 # import datetime
 import re
 import requests
+from typing import Dict, List, Tuple
 
 import globals
 from utils import log
 
 
-def search_reserved(text):
+def search_reserved(text: str):
     total_reserved = re.findall(
         "(?<=markResStatus\('\d{8}',')(.*?)(?=',')", text
     )
     return total_reserved
 
 
-def search_total(text):
+def search_total(text: str):
     total_court_ids = re.findall(
         "(?<=resourceArray.push\(\{id:')(.*?)(?=',)", text
     )
@@ -41,25 +42,25 @@ def search_total(text):
     )
 
 
-def availability_check(text):
-    total_reserved = search_reserved(text)
+def get_available_courts(text: str) -> Tuple[Dict, List[int]]:
+    reserved_ids = search_reserved(text)
     (
         total_court_ids,
-        total_time_sessions,
+        all_time_sessions,
         total_field_names,
         total_costs,
         total_tokens,
     ) = search_total(text)
-    dict = {}
-    total_time_sessions = list(dict.fromkeys(total_time_sessions))
+    all_data = {}
+    all_time_sessions = list(all_data.fromkeys(all_time_sessions))
     count = 0
-    for time_sessions in range(len(total_time_sessions)):
+    for time_sessions in range(len(all_time_sessions)):
         if (
-            int(len(total_field_names) / len(total_time_sessions))
-            == int(len(total_court_ids) / len(total_time_sessions))
-            == int(len(total_costs) / len(total_time_sessions))
+            int(len(total_field_names) / len(all_time_sessions))
+            == int(len(total_court_ids) / len(all_time_sessions))
+            == int(len(total_costs) / len(all_time_sessions))
         ):
-            avg = int(len(total_court_ids) / len(total_time_sessions))
+            avg = int(len(total_court_ids) / len(all_time_sessions))
         item_time_sessions = {}
         for field_names in total_field_names[
             time_sessions * avg : (time_sessions + 1) * avg
@@ -70,41 +71,42 @@ def availability_check(text):
             item_field_names["Court Token"] = total_tokens[count]
             count += 1
             item_time_sessions[field_names] = item_field_names
-        dict[total_time_sessions[time_sessions]] = item_time_sessions
-    total = []
-    prefs = list(dict.keys())
+        all_data[all_time_sessions[time_sessions]] = item_time_sessions
+
+    all_court_ids = []
+    prefs = list(all_data.keys())
     prefs.reverse()
 
-    for first_key, value in dict.items():
-        for sec_key in value.items():
-            total.append(sec_key[1]["Court ID"])
+    for key0, value in all_data.items():
+        for key1 in value.items():
+            all_court_ids.append(key1[1]["Court ID"])
 
-    available_ids = [x for x in total if x not in total_reserved]
+    available_ids = [x for x in all_court_ids if x not in reserved_ids]
 
-    return dict, available_ids
+    return all_data, available_ids
 
 
 def availability_update():
     session = requests.Session()
-    res = session.get(globals.viewbookURL)
-    _, globals.validCourtIDs = availability_check(res.text)
-    globals.validCourtIDs.reverse()
+    res = session.get(globals.view_book_url)
+    _, new_available_court_ids = get_available_courts(res.text)
+    # new_available_court_ids.reverse()
 
     valid_indices = [
-        globals.prefCourtIDs.index(x)
-        for x in globals.validCourtIDs
-        if x in globals.prefCourtIDs
+        globals.target_court_ids.index(x)
+        for x in new_available_court_ids
+        if x in globals.target_court_ids
     ]
 
-    globals.prefCourtIDs = [globals.prefCourtIDs[i] for i in valid_indices]
-    globals.prefCourtCosts = [globals.prefCourtCosts[i] for i in valid_indices]
-    globals.prefCourtTokens = [globals.prefCourtTokens[i] for i in valid_indices]
-    globals.prefCourtInfos = [globals.prefCourtInfos[i] for i in valid_indices]
-    log(f"Remaining courts: {globals.prefCourtInfos}")
+    globals.target_court_ids = [globals.target_court_ids[i] for i in valid_indices]
+    globals.target_court_costs = [globals.target_court_costs[i] for i in valid_indices]
+    globals.target_court_tokens = [globals.target_court_tokens[i] for i in valid_indices]
+    globals.target_court_infos = [globals.target_court_infos[i] for i in valid_indices]
+    log(f"Remaining courts: {globals.target_court_infos}")
 
 
 if __name__ == "__main__":
     session = requests.Session()
     testurl = "https://50.tsinghua.edu.cn/gymsite/cacheAction.do?ms=viewBook&gymnasium_id=3998000&item_id=4045681&time_date=2023-10-24&userType=1"
     res = session.get(testurl)
-    availability_check(res.text)
+    get_available_courts(res.text)

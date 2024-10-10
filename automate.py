@@ -2,12 +2,19 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 
+from pathlib import Path
 import datetime
 import platform
 import time
 
 
-def automateLogin(STUDENT_ID: str, PASSWORD: str, GYM_ID: str, ITEM_ID: str):
+def automateLogin(
+    STUDENT_ID: str,
+    PASSWORD: str,
+    GYM_ID: str,
+    ITEM_ID: str,
+    verbose: bool = False,
+):
     # Linux
     if platform.system() == "Linux":
         chrome_driver_path = "./chromedriver_linux64"
@@ -17,9 +24,7 @@ def automateLogin(STUDENT_ID: str, PASSWORD: str, GYM_ID: str, ITEM_ID: str):
         chrome_options.add_argument("--headless=new")
         chrome_options.binary_location = chrome_driver_path
         chrome_options.add_argument("log-level=2")
-        chrome_options.add_experimental_option(
-            "excludeSwitches", ["enable-logging"]
-        )
+        chrome_options.add_experimental_option("excludeSwitches", ["enable-logging"])
 
         driver = webdriver.Chrome(options=chrome_options)
 
@@ -27,15 +32,17 @@ def automateLogin(STUDENT_ID: str, PASSWORD: str, GYM_ID: str, ITEM_ID: str):
     elif platform.system() == "Windows":
         chrome_driver_path = "./drivers/chromedriver.exe"
 
+        assert Path(chrome_driver_path).exists()
+
+        print(f"Loading chrome driver from: {chrome_driver_path}")
+
         chrome_options = webdriver.ChromeOptions()
         chrome_options.add_experimental_option("detach", True)
-        chrome_options.add_argument("--headless=new")
+        # chrome_options.add_argument("--headless=new")
         # chrome_options.add_argument("--disable-dev-shm-usage")  # //!!!should be enabled for Jenkins
         # chrome_options.add_argument("--window-size=1920x1080")  # //!!!should be enabled for Jenkins
         chrome_options.add_argument("log-level=2")
-        chrome_options.add_experimental_option(
-            "excludeSwitches", ["enable-logging"]
-        )
+        chrome_options.add_experimental_option("excludeSwitches", ["enable-logging"])
 
         service = Service(chrome_driver_path)
         driver = webdriver.Chrome(service=service, options=chrome_options)
@@ -49,23 +56,25 @@ def automateLogin(STUDENT_ID: str, PASSWORD: str, GYM_ID: str, ITEM_ID: str):
     username_field = driver.find_element(By.NAME, "un")
     password_field = driver.find_element(By.NAME, "pw")
 
+    if verbose:
+        print(f"Sending username and password...")
     username_field.send_keys(STUDENT_ID)
     password_field.send_keys(PASSWORD)
 
-    login_button = driver.find_element(
-        By.XPATH, "//input[@src='images/login.jpg']"
-    )
+    login_button = driver.find_element(By.XPATH, "//input[@src='images/login.jpg']")
+    if verbose:
+        print("Clicking login button...")
     login_button.click()
 
     courtBookLink = driver.find_element(
         By.XPATH,
         "//a[@href='/gymsite/gymBookViewAction.do?ms=viewBook_site&fromPage=index']",
     )
+    if verbose:
+        print("Clicking court booking link...")
     courtBookLink.click()
 
-    bookCourtLink = driver.find_element(
-        By.XPATH, "//a[@href='javascript:viewBook()']"
-    )
+    bookCourtLink = driver.find_element(By.XPATH, "//a[@href='javascript:viewBook()']")
     bookCourtLink.click()
 
     confirmButton = driver.find_element(
@@ -97,10 +106,15 @@ def automateLogin(STUDENT_ID: str, PASSWORD: str, GYM_ID: str, ITEM_ID: str):
         By.XPATH, "//div[@class='member-box round-all']//strong"
     ).text
 
-    return serverid, jsessionid, username, driver
+    return {
+        'serverid': serverid, 
+        'jsessionid': jsessionid,
+        'username': username,
+        'driver': driver,
+    }
 
 
-def automatePay(driver, session, serverid, jsessionid, paymentmethod):
+def automatePay(driver, session, serverid, jsessionid, paymentmethod: str):
     orderButton = driver.find_element(
         By.XPATH, "//a[@href='/pay/payAction.do?ms=getOrdersForNopay']"
     )
@@ -120,9 +134,7 @@ def automatePay(driver, session, serverid, jsessionid, paymentmethod):
         )
         driver.execute_script("arguments[0].click();", submitButton)
 
-        proceedButton = driver.find_element(
-            By.XPATH, '//button[@id="proceed-button"]'
-        )
+        proceedButton = driver.find_element(By.XPATH, '//button[@id="proceed-button"]')
         proceedButton.click()
         time.sleep(2)
         proceedButton.click()
